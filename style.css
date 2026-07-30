@@ -1,0 +1,41 @@
+
+body {
+    background: black;
+}
+
+h1, h3 {
+    color: rgb(236, 0, 140);
+}
+
+.note, h2, label {
+    color: rgb(118, 12, 235);
+}
+
+p, a {
+    color: rgb(25, 235, 12);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas:
+        "header header header"
+        "left   main   right"
+        "footer footer footer";
+}
+
+header { 
+    grid-area: header; 
+
+    text-align: center;
+}
+
+main { 
+    grid-area: main;
+}
+
+footer { 
+    grid-area: footer; 
+
+    text-align: center;
+}

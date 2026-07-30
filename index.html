@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ESP32 NetWatch Web Panel</title>
+    <link rel="stylesheet" href="/html/style.css">
+</head>
+
+<body>
+    <div class="grid-container">
+        <header>
+            <h1>ESP32 NetWatch Web Control Panel</h1>
+        </header>
+
+        <main>
+            <h2>this is the control panel, where you can set or change variables.</h2>
+            <p>most of your important variables that controls how this project will run are available to be changed here in this web panel.</p>
+
+            <h2>Important Settings:</h2>
+
+            <h3>Wi-Fi Settings:</h3>
+            <p>here you can set your SSID and password.</p>
+
+            <form action="/wifi">
+                <label for="ssid">SSID:</label>
+                <input type="text" id="ssid" name="ssid"><br><br>
+
+                <label for="password">Password:</label>
+                <input type="text" id="password" name="password"><br><br>
+                <input type="submit" value="Submit">
+            </form>
+
+            <h3>Domains or IPs to be checked:</h3>
+            <p>here you can set, change, or remove domains or IP addresses that you would like to be polled for connectivity.</p>
+
+            <form action="/domains">
+                <label for="new">New Domain or IP:</label>
+                <input type="text" id="new" name="new"><br><br>
+                <input type="submit" value="Submit">
+            </form>
+
+            <h2>Other Settings:</h2>
+
+            <h3>Cycle Time (in minutes):</h3>
+            <p>this is the length of time it takes to complete a cycle (ie check all of the domains and IPs).</p>
+            <p>default value is a function using the number of domains and IPs, is calculated at runtime.</p>
+            <p class="note">NOTE: best to leave this alone, see docs for details.</p>
+
+            <form action="/cycletime">
+                <label for="time">Cycle Time:</label>
+                <input type="text" id="time" name="time"><br><br>
+                <input type="submit" value="Submit">
+            </form>
+
+            <h3>Sleep Time (in seconds):</h3>
+            <p>this controls how long it will display each domain name, status code, and message on the screen.</p>
+            <p>default value is 30 seconds</p>
+            <p class="note">NOTE: best to leave at 30 seconds, see docs for details.</p>
+
+            <form action="/sleeptime">
+                <label for="sleep">Sleep Time:</label>
+                <input type="text" id="sleep" name="sleep"><br><br>
+                <input type="submit" value="Submit">
+            </form>
+
+            <h3>Time Sync? (on/off):</h3>
+            <p>this allows the user to control the time sync function.</p>
+            <p class="note">NOTE: time sync is not required for project operation.</p>
+
+            <fieldset>
+                <legend>Time Sync:</legend>
+                <div>
+                    <input type="radio" id="on" name="timesync" value="on" checked/>
+                    <label for="on">On</label>
+                </div>
+                <div>
+                    <input type="radio" id="off" name="timesync" value="off"/>
+                    <label for="off">Off</label>
+                </div>
+            </fieldset>
+        </main>
+
+        <footer>
+            <p>forever free and open source &lt;3</p>
+            <a href="https://solarpoweredstuff.net/projects/ESP32_netwatch">Documentation</a><br>
+            <a href="https://github.com/2003emachinesDesktop/ESP32_netwatch">https://github.com/2003emachinesDesktop/ESP32_netwatch</a>
+        </footer>
+    </div>
+</body>
+</html>
