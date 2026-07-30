@@ -9,4 +9,8 @@ in my case, i am running pi-hole on my network and the pi board is really old (O
 i have it set to check uptime every 5 minutes, thats very easy to change. 
 
 i plan on patching some small issues in the next few weeks/months:
+
+07/30/26:
+
+after many painful months of trying to get a webserver running, and running with the main code, and then running "simultaniously", i finally have something working. 
   
