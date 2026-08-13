@@ -28,24 +28,10 @@ domains = [["google", "https://google.com"], ["duckduckgo", "https://duckduckgo.
 ssid = "camp horsey ducky"
 password = "nomoreshawwifi"
 
-html = """<!DOCTYPE html>
-<html>
-    <head>
-    <title>ESP8266 Pins</title>
-    </head>
-    
-    <body>
-    <h1>ESP8266 Pins</h1>
-        <table border="1"> <tr><th>Pin</th><th>Value</th></tr> %s </table>
-        
-        <h1>ESP32 LED Control</h1>
-    <p>
-      <a href="/on"><button class="btn">Turn LED ON</button></a>
-      <a href="/off"><button class="btn">Turn LED OFF</button></a>
-    </p>
-    </body>
-</html>
-"""
+import os
+print(os.listdir('/html'))
+print(os.stat('/html/index.html'))   # index 6 in the tuple is size in bytes
+print(os.stat('/html/style.css'))
 
 
 # Define the LCD I2C address and dimensions
@@ -105,24 +91,6 @@ async def check_connectivity():
         await asyncio.sleep(delay//len(domains))
 
 
-# def check_connectivity():
-#     for entry in domains:
-#         
-#         try:
-#             status = urequests.get(entry[1])
-#             gc.collect()
-#             
-#             if status.status_code == 200:
-#                 print(f"{entry[0]}: online")
-#             else:
-#                 print(f"{entry[0]}: offline")
-#                     
-#             status.close()
-#             
-#             #await asyncio.sleep(10)
-#         
-#         except:
-#             print("error")
                 
             
 def connect_wifi(ssid, password):
@@ -192,45 +160,49 @@ def sync_time():
     
     gc.collect()
  
+
+
 async def webserver():
-#def webserver():
     while True:
         try:
             cl, addr = s.accept()
-        
             print('client connected from', addr)
+            
             cl_file = cl.makefile('rwb', 0)
+            request = cl_file.readline()
+            
+            # Discard headers
             while True:
                 line = cl_file.readline()
                 if not line or line == b'\r\n':
                     break
-            rows = ['<tr><td>%s</td><td>%d</td></tr>' % (str(p), p.value()) for p in pins]
-            response = html % '\n'.join(rows)
-            cl.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
-            cl.send(response)
+            
+            if not request:
+                cl.close()
+                continue
+                
+            request = request.decode('utf-8')
+            request_parts = request.split()
+            path = request_parts[1] if len(request_parts) > 1 else '/'
+            
+            if path == '/style.css':
+                response = b'HTTP/1.0 200 OK\r\nContent-Type: text/css\r\nConnection: close\r\n\r\n' + css
+            else:
+                response = b'HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n' + html
+            
+            cl.sendall(response)
             cl.close()
+            
         except Exception as e:
             print("error: ", e)
             await asyncio.sleep(0.1)
-            #break
+            
         
         
 async def main():
-#     old_minute = 0
-#     current_minute = time.localtime()[4]
-# 
-#     #if current_minute % 1 == 0 and current_minute != old_minute:
-#     if current_minute % 1 == 0:
-#         print(f"current minute: {current_minute}")
-#         old_minute = current_minute
-#         print("old minute: ", old_minute)
     while True:
         await check_connectivity()
-        
-#     try:
-#         await webserver()
-#     except Exception as e:
-#         print("error: ", e)
+
         await asyncio.sleep(1)
 
 
@@ -252,7 +224,16 @@ if not connect_wifi(ssid, password):
         sleep(5)
 
 sync_time()
-        
+
+with open('/html/index.html', 'rb') as f:
+    html = f.read()
+    
+with open('/html/style.css', 'rb') as f:
+    css = f.read()
+
+# html = b'<html><body><h1>ESP32 Online</h1></body></html>'
+# css = b'body { font-family: sans-serif; }'
+    
 
 addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
 
@@ -269,21 +250,7 @@ loop.create_task(main())
 loop.create_task(webserver())
 loop.run_forever()
 
-# 
-# while True:
-#     current_minute = time.localtime()[4]
-# 
-#     if current_minute % 1 == 0 and current_minute != old_minute:
-#     #if current_minute % 1 == 0:
-#         print(f"current minute: {current_minute}")
-#         old_minute = current_minute
-#         print("old minute: ", old_minute)
-#         check_connectivity()
-#         
-#     try:
-#         webserver()
-#     except Exception as e:
-#         print("error: ", e)
+
    
         
 
